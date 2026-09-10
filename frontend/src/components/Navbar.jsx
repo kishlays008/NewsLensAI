@@ -21,6 +21,9 @@ const Navbar = () => {
           <Link to="/" className="hover:text-indigo-600">
             Home
           </Link>
+          <Link to="/summarize" className="hover:text-indigo-600">
+            Summarize
+          </Link>
 
           {user ? (
             <>

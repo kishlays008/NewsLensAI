@@ -1,5 +1,10 @@
+// Must run before any other local import: ES module imports are hoisted and
+// execute in order, so if dotenv.config() ran after (e.g. as a later
+// statement), modules like geminiService.js that read process.env at import
+// time would capture `undefined` for anything only defined in .env.
+import "dotenv/config";
+
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import { fetchAndSaveArticles } from "./utils/fetchArticles.js";
@@ -7,8 +12,9 @@ import { generateAllSummaries } from "./utils/generateSummaries.js";
 import authRoutes from "./routes/authRoutes.js";
 import articleRoutes from "./routes/articleRoutes.js";
 import bookmarkRoutes from "./routes/bookmarkRoutes.js";
+import summarizeRoutes from "./routes/summarizeRoutes.js";
+import { rateLimit } from "./middleware/rateLimit.js";
 
-dotenv.config();
 connectDB();
 
 const app = express();
@@ -23,6 +29,10 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
+// The Gemini free tier is capped at ~20 requests/day, so this public,
+// unauthenticated endpoint is rate-limited per IP to avoid one visitor
+// exhausting the whole app's daily quota.
+app.use("/api/summarize", rateLimit({ windowMs: 60 * 60 * 1000, max: 5 }), summarizeRoutes);
 
 // Manual triggers for refreshing content (also run on an interval below)
 app.get("/api/test-fetch", async (req, res) => {

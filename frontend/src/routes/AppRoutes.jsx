@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ArticleDetail from "../pages/ArticleDetail";
 import Bookmarks from "../pages/Bookmarks";
+import Summarizer from "../pages/Summarizer";
 import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
@@ -26,6 +27,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/article/:id" element={<ArticleDetail />} />
+      <Route path="/summarize" element={<Summarizer />} />
       <Route
         path="/bookmarks"
         element={
