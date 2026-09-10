@@ -32,7 +32,7 @@ app.use("/api/bookmarks", bookmarkRoutes);
 // The Gemini free tier is capped at ~20 requests/day, so this public,
 // unauthenticated endpoint is rate-limited per IP to avoid one visitor
 // exhausting the whole app's daily quota.
-app.use("/api/summarize", rateLimit({ windowMs: 60 * 60 * 1000, max: 5 }), summarizeRoutes);
+app.use("/api/summarize", rateLimit({ windowMs: 60 * 60 * 1000, max: 10 }), summarizeRoutes);
 
 // Manual triggers for refreshing content (also run on an interval below)
 app.get("/api/test-fetch", async (req, res) => {
